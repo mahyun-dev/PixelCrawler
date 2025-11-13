@@ -50,7 +50,7 @@ game/
 
 ## 🚀 시작하기
 
-## [여기를 클릭하여 실행하기](https://mahyun-dev.github.io/chess-game/index.html)
+## [여기를 클릭하여 실행하기](https://mahyun-dev.github.io/PixelCrawler/game)
 
 ### 로컬 실행
 
@@ -143,4 +143,5 @@ git push origin main
 ---
 
 **Made with ❤️ and Phaser 3**
+
 
