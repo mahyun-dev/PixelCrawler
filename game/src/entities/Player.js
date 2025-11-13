@@ -2,13 +2,13 @@ export default class Player {
     constructor(scene, x, y) {
         this.scene = scene;
         
-        // 플레이어 스프라이트 생성 (임시로 사각형 사용, 나중에 애니메이션으로 교체)
-        this.sprite = scene.add.rectangle(x, y, 32, 32, 0x00ff00);
-        scene.physics.add.existing(this.sprite);
+        // 플레이어 스프라이트 생성 (실제 스프라이트 사용)
+        this.sprite = scene.physics.add.sprite(x, y, 'player_Idle_Base_Down');
         
         // 물리 속성 설정
         this.sprite.body.setCollideWorldBounds(true);
-        this.sprite.body.setSize(32, 32);
+        this.sprite.body.setSize(30, 40);
+        this.sprite.body.setOffset(9, 8);
         
         // 플레이어 스탯
         this.stats = {
@@ -16,7 +16,16 @@ export default class Player {
             hp: 100,
             maxHp: 100,
             speed: 200,
-            attackPower: 10
+            attackPower: 10,
+            exp: 0,
+            expToLevel: 100
+        };
+        
+        // 인벤토리
+        this.inventory = {
+            items: [],
+            gold: 0,
+            maxSlots: 20
         };
         
         // 상태
@@ -37,17 +46,17 @@ export default class Player {
             inventory: Phaser.Input.Keyboard.KeyCodes.I
         });
         
-        // 애니메이션 생성 (실제 스프라이트시트 로드 후 활성화)
-        // this.createAnimations();
+        // 애니메이션 생성
+        this.createAnimations();
     }
     
     createAnimations() {
         const directions = ['Down', 'Side', 'Up'];
         const animations = [
-            { key: 'idle', prefix: 'Idle_Base' },
-            { key: 'walk', prefix: 'Walk_Base' },
-            { key: 'run', prefix: 'Run_Base' },
-            { key: 'attack', prefix: 'Slice_Base' }
+            { key: 'idle', prefix: 'Idle_Base', frameRate: 6, repeat: -1 },
+            { key: 'walk', prefix: 'Walk_Base', frameRate: 8, repeat: -1 },
+            { key: 'run', prefix: 'Run_Base', frameRate: 10, repeat: -1 },
+            { key: 'attack', prefix: 'Slice_Base', frameRate: 12, repeat: 0 }
         ];
         
         directions.forEach(dir => {
@@ -56,15 +65,22 @@ export default class Player {
                 const textureKey = `player_${anim.prefix}_${dir}`;
                 
                 if (this.scene.textures.exists(textureKey)) {
-                    this.scene.anims.create({
-                        key: animKey,
-                        frames: this.scene.anims.generateFrameNumbers(textureKey, { start: 0, end: -1 }),
-                        frameRate: 10,
-                        repeat: anim.key === 'idle' ? -1 : 0
-                    });
+                    if (!this.scene.anims.exists(animKey)) {
+                        this.scene.anims.create({
+                            key: animKey,
+                            frames: this.scene.anims.generateFrameNumbers(textureKey, { start: 0, end: -1 }),
+                            frameRate: anim.frameRate,
+                            repeat: anim.repeat
+                        });
+                    }
                 }
             });
         });
+        
+        // 기본 애니메이션 재생
+        if (this.scene.anims.exists('player_idle_down')) {
+            this.sprite.play('player_idle_down');
+        }
     }
     
     update() {
@@ -119,25 +135,39 @@ export default class Player {
             this.openInventory();
         }
         
-        // 애니메이션 업데이트 (나중에 활성화)
-        // this.updateAnimation(velocity);
+        // 애니메이션 업데이트
+        this.updateAnimation(velocity);
     }
     
     updateAnimation(velocity) {
+        if (this.state.isAttacking) return;
+        
         const isMoving = velocity.x !== 0 || velocity.y !== 0;
+        let direction = this.state.direction;
+        
+        // 방향 매핑 (left/right -> side)
+        if (direction === 'left' || direction === 'right') {
+            direction = 'side';
+        }
         
         if (isMoving) {
-            let animKey = `player_walk_${this.state.direction}`;
-            this.sprite.anims.play(animKey, true);
+            const animKey = `player_walk_${direction}`;
+            if (this.scene.anims.exists(animKey)) {
+                this.sprite.anims.play(animKey, true);
+            }
         } else {
-            let animKey = `player_idle_${this.state.direction}`;
-            this.sprite.anims.play(animKey, true);
+            const animKey = `player_idle_${direction}`;
+            if (this.scene.anims.exists(animKey)) {
+                this.sprite.anims.play(animKey, true);
+            }
         }
         
         // 좌우 반전
         if (this.state.direction === 'left') {
             this.sprite.setFlipX(true);
         } else if (this.state.direction === 'right') {
+            this.sprite.setFlipX(false);
+        } else {
             this.sprite.setFlipX(false);
         }
     }
@@ -146,43 +176,168 @@ export default class Player {
         if (this.state.isAttacking) return;
         
         this.state.isAttacking = true;
-        console.log('플레이어 공격!');
+        this.sprite.body.setVelocity(0, 0);
+        
+        let direction = this.state.direction;
+        if (direction === 'left' || direction === 'right') {
+            direction = 'side';
+        }
+        
+        const attackAnim = `player_attack_${direction}`;
+        if (this.scene.anims.exists(attackAnim)) {
+            this.sprite.play(attackAnim);
+        }
+        
+        // 공격 히트박스 생성
+        this.createAttackHitbox();
         
         // 공격 애니메이션 재생 후 상태 복구
-        this.scene.time.delayedCall(500, () => {
+        this.scene.time.delayedCall(400, () => {
             this.state.isAttacking = false;
         });
     }
     
+    createAttackHitbox() {
+        const offsetX = this.state.direction === 'left' ? -40 : 
+                        this.state.direction === 'right' ? 40 : 0;
+        const offsetY = this.state.direction === 'up' ? -40 : 
+                        this.state.direction === 'down' ? 40 : 0;
+        
+        const hitbox = this.scene.add.rectangle(
+            this.sprite.x + offsetX, 
+            this.sprite.y + offsetY, 
+            40, 40, 0xff0000, 0.3
+        );
+        
+        this.scene.physics.add.existing(hitbox);
+        
+        // 몬스터와 충돌 체크
+        if (this.scene.monsters) {
+            this.scene.physics.overlap(hitbox, this.scene.monsters, (hitbox, monsterSprite) => {
+                if (monsterSprite.monster) {
+                    monsterSprite.monster.takeDamage(this.stats.attackPower);
+                }
+            });
+        }
+        
+        // 히트박스 제거
+        this.scene.time.delayedCall(100, () => {
+            hitbox.destroy();
+        });
+    }
+    
     interact() {
-        console.log('상호작용 시도');
-        // NPC나 오브젝트와의 상호작용 처리
+        // 주변 NPC나 오브젝트 찾기
+        const interactRange = 50;
+        
+        if (this.scene.npcs) {
+            this.scene.npcs.children.entries.forEach(npcSprite => {
+                const distance = Phaser.Math.Distance.Between(
+                    this.sprite.x, this.sprite.y,
+                    npcSprite.x, npcSprite.y
+                );
+                
+                if (distance < interactRange && npcSprite.npc) {
+                    npcSprite.npc.interact(this);
+                }
+            });
+        }
     }
     
     openInventory() {
-        console.log('인벤토리 열기 - 미구현');
-        // 인벤토리 UI 표시
+        if (this.scene.inventoryUI) {
+            this.scene.inventoryUI.toggle();
+        } else {
+            console.log('인벤토리:', this.inventory);
+        }
+    }
+    
+    addItem(item) {
+        if (this.inventory.items.length < this.inventory.maxSlots) {
+            this.inventory.items.push(item);
+            console.log(`아이템 획득: ${item.name}`);
+            return true;
+        }
+        console.log('인벤토리가 가득 찼습니다!');
+        return false;
+    }
+    
+    addGold(amount) {
+        this.inventory.gold += amount;
+        console.log(`골드 획득: ${amount}G`);
+    }
+    
+    addExp(amount) {
+        this.stats.exp += amount;
+        
+        while (this.stats.exp >= this.stats.expToLevel) {
+            this.levelUp();
+        }
+    }
+    
+    levelUp() {
+        this.stats.level++;
+        this.stats.exp -= this.stats.expToLevel;
+        this.stats.expToLevel = Math.floor(this.stats.expToLevel * 1.5);
+        
+        // 스탯 증가
+        this.stats.maxHp += 20;
+        this.stats.hp = this.stats.maxHp;
+        this.stats.attackPower += 5;
+        
+        console.log(`레벨 업! Lv.${this.stats.level}`);
+        
+        // UI 업데이트
+        if (this.scene.updateUI) {
+            this.scene.updateUI();
+        }
     }
     
     takeDamage(amount) {
         this.stats.hp = Math.max(0, this.stats.hp - amount);
         
+        // 피격 이펙트
+        this.sprite.setTint(0xff0000);
+        this.scene.time.delayedCall(200, () => {
+            this.sprite.clearTint();
+        });
+        
         if (this.stats.hp <= 0) {
             this.die();
         }
         
-        console.log(`플레이어 피해: ${amount}, 남은 HP: ${this.stats.hp}`);
+        // UI 업데이트
+        if (this.scene.updateUI) {
+            this.scene.updateUI();
+        }
     }
     
     heal(amount) {
         this.stats.hp = Math.min(this.stats.maxHp, this.stats.hp + amount);
-        console.log(`플레이어 회복: ${amount}, 현재 HP: ${this.stats.hp}`);
+        
+        // 회복 이펙트
+        this.sprite.setTint(0x00ff00);
+        this.scene.time.delayedCall(200, () => {
+            this.sprite.clearTint();
+        });
+        
+        // UI 업데이트
+        if (this.scene.updateUI) {
+            this.scene.updateUI();
+        }
     }
     
     die() {
         this.state.isDead = true;
         this.sprite.body.setVelocity(0, 0);
-        console.log('플레이어 사망');
-        // 사망 처리 및 게임 오버
+        
+        // 사망 애니메이션
+        this.sprite.setTint(0x666666);
+        this.sprite.setAlpha(0.5);
+        
+        // 게임 오버
+        this.scene.time.delayedCall(1000, () => {
+            this.scene.gameOver();
+        });
     }
 }
