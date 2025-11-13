@@ -1,0 +1,26 @@
+{
+  "name": "pixel-crawler",
+  "version": "0.1.0",
+  "description": "2D Pixel Art Top-Down Action RPG / Roguelike Web Game",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "npx http-server -p 8000 -o game/",
+    "build": "echo 'No build step required for static deployment'",
+    "deploy": "gh-pages -d ."
+  },
+  "keywords": [
+    "game",
+    "phaser",
+    "roguelike",
+    "rpg",
+    "pixel-art",
+    "2d-game"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "gh-pages": "^6.0.0",
+    "http-server": "^14.1.1"
+  }
+}
