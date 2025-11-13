@@ -45,10 +45,12 @@ game/
 │   ├── systems/            # 게임 시스템
 │   │   └── ResourceLoader.js  # 리소스 로더
 │   └── ui/                 # UI 컴포넌트
-└── Pixel Crawler - Free Pack/  # 게임 리소스
+└── Pixel-Crawler-Pack/  # 게임 리소스
 ```
 
 ## 🚀 시작하기
+
+## [여기를 클릭하여 실행하기](https://mahyun-dev.github.io/chess-game/index.html)
 
 ### 로컬 실행
 
@@ -141,3 +143,4 @@ git push origin main
 ---
 
 **Made with ❤️ and Phaser 3**
+
