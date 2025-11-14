@@ -6,7 +6,7 @@ export default class Player {
         this.createAnimations();
         
         // 플레이어 스프라이트 생성 (실제 스프라이트 사용)
-        const textureKey = 'player_Idle_Base_Down';
+        const textureKey = 'player_Idle_Base_Down';  // ResourceLoader의 키와 일치
         if (!scene.textures.exists(textureKey)) {
             console.warn(`Texture not found: ${textureKey}, creating placeholder`);
             this.sprite = scene.physics.add.sprite(x, y, '__DEFAULT');
@@ -64,31 +64,37 @@ export default class Player {
     }
     
     createAnimations() {
-        const directions = ['Down', 'Side', 'Up'];
         const animations = [
-            { key: 'idle', prefix: 'Idle_Base', frameRate: 6, repeat: -1 },
-            { key: 'walk', prefix: 'Walk_Base', frameRate: 8, repeat: -1 },
-            { key: 'run', prefix: 'Run_Base', frameRate: 10, repeat: -1 },
-            { key: 'attack', prefix: 'Slice_Base', frameRate: 12, repeat: 0 }
+            { key: 'idle', folder: 'Idle_Base', directions: ['Down', 'Side', 'Up'], frameRate: 6, repeat: -1 },
+            { key: 'walk', folder: 'Walk_Base', directions: ['Down', 'Side', 'Up'], frameRate: 8, repeat: -1 },
+            { key: 'run', folder: 'Run_Base', directions: ['Down', 'Side', 'Up'], frameRate: 10, repeat: -1 },
+            { key: 'attack', folder: 'Slice_Base', directions: ['Down', 'Side', 'Up'], frameRate: 12, repeat: 0 }
         ];
         
-        directions.forEach(dir => {
-            animations.forEach(anim => {
+        animations.forEach(anim => {
+            anim.directions.forEach(dir => {
                 const animKey = `player_${anim.key}_${dir.toLowerCase()}`;
-                const textureKey = `player_${anim.prefix}_${dir}`;
+                const textureKey = `player_${anim.folder}_${dir}`;  // folder 사용!
                 
                 if (this.scene.textures.exists(textureKey)) {
                     if (!this.scene.anims.exists(animKey)) {
-                        const frameCount = this.scene.textures.get(textureKey).frameTotal;
-                        if (frameCount > 1) {
-                            this.scene.anims.create({
-                                key: animKey,
-                                frames: this.scene.anims.generateFrameNumbers(textureKey, { start: 0, end: frameCount - 1 }),
-                                frameRate: anim.frameRate,
-                                repeat: anim.repeat
-                            });
+                        try {
+                            const texture = this.scene.textures.get(textureKey);
+                            const frameCount = texture.frameTotal;
+                            if (frameCount > 1) {
+                                this.scene.anims.create({
+                                    key: animKey,
+                                    frames: this.scene.anims.generateFrameNumbers(textureKey, { start: 0, end: frameCount - 1 }),
+                                    frameRate: anim.frameRate,
+                                    repeat: anim.repeat
+                                });
+                            }
+                        } catch (error) {
+                            console.warn(`Failed to create animation ${animKey}:`, error);
                         }
                     }
+                } else {
+                    console.warn(`Texture not found: ${textureKey}`);
                 }
             });
         });
