@@ -40,14 +40,14 @@ export class ResourceLoader {
     // 몬스터 로드
     loadMonsters() {
         const mobs = [
-            { name: 'Orc', path: 'Orc Crew/Orc' },
-            { name: 'OrcRogue', path: 'Orc Crew/Orc - Rogue' },
-            { name: 'OrcShaman', path: 'Orc Crew/Orc - Shaman' },
-            { name: 'OrcWarrior', path: 'Orc Crew/Orc - Warrior' },
-            { name: 'Skeleton', path: 'Skeleton Crew/Skeleton - Base' },
-            { name: 'SkeletonMage', path: 'Skeleton Crew/Skeleton - Mage' },
-            { name: 'SkeletonRogue', path: 'Skeleton Crew/Skeleton - Rogue' },
-            { name: 'SkeletonWarrior', path: 'Skeleton Crew/Skeleton - Warrior' }
+            { name: 'Orc', path: 'Orc%20Crew/Orc' },
+            { name: 'OrcRogue', path: 'Orc%20Crew/Orc%20-%20Rogue' },
+            { name: 'OrcShaman', path: 'Orc%20Crew/Orc%20-%20Shaman' },
+            { name: 'OrcWarrior', path: 'Orc%20Crew/Orc%20-%20Warrior' },
+            { name: 'Skeleton', path: 'Skeleton%20Crew/Skeleton%20-%20Base' },
+            { name: 'SkeletonMage', path: 'Skeleton%20Crew/Skeleton%20-%20Mage' },
+            { name: 'SkeletonRogue', path: 'Skeleton%20Crew/Skeleton%20-%20Rogue' },
+            { name: 'SkeletonWarrior', path: 'Skeleton%20Crew/Skeleton%20-%20Warrior' }
         ];
 
         const states = ['Idle', 'Run', 'Death'];
@@ -148,9 +148,9 @@ export class ResourceLoader {
         this.loadCharacterAnimations();
         this.loadMonsters();
         this.loadNPCs();
-        this.loadEnvironment();
-        this.loadTilesets();
-        this.loadBuildings();
-        this.loadWeapons();
+        // this.loadEnvironment();
+        // this.loadTilesets();
+        // this.loadBuildings();
+        // this.loadWeapons();
     }
 }
