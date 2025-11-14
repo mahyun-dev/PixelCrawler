@@ -26,6 +26,7 @@ export default class Player {
         this.sprite.body.setCollideWorldBounds(true);
         this.sprite.body.setSize(32, 40);
         this.sprite.body.setOffset(8, 4);
+        this.sprite.body.setBounce(0, 0); // 반동 없음
         
         // 플레이어 스탯
         this.stats = {
@@ -80,7 +81,7 @@ export default class Player {
     createAnimations() {
         const animations = [
             { key: 'idle', folder: 'Idle_Base', directions: ['Down', 'Side', 'Up'], frameRate: 4, repeat: -1 },
-            { key: 'walk', folder: 'Walk_Base', directions: ['Down', 'Side', 'Up'], frameRate: 6, repeat: -1 },
+            { key: 'walk', folder: 'Walk_Base', directions: ['Down', 'Side', 'Up'], frameRate: 4, repeat: -1 },
             { key: 'run', folder: 'Run_Base', directions: ['Down', 'Side', 'Up'], frameRate: 8, repeat: -1 },
             { key: 'attack', folder: 'Slice_Base', directions: ['Down', 'Side', 'Up'], frameRate: 10, repeat: 0 }
         ];
@@ -215,7 +216,10 @@ export default class Player {
             // 이동 중: walk 애니메이션
             const animKey = `player_walk_${direction}`;
             if (this.scene.anims.exists(animKey)) {
-                this.sprite.anims.play(animKey, true);
+                // 이미 같은 애니메이션이 재생 중이 아닐 때만 재생
+                if (!this.sprite.anims.isPlaying || this.sprite.anims.currentAnim.key !== animKey) {
+                    this.sprite.anims.play(animKey);
+                }
             }
         } else {
             // 정지: 애니메이션 정지 및 첫 프레임

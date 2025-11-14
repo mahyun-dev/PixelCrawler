@@ -201,7 +201,10 @@ export default class Monster {
             // 이동 중: run 애니메이션
             const runAnim = `mob_${this.type}_run`;
             if (this.scene.anims.exists(runAnim)) {
-                this.sprite.anims.play(runAnim, true);
+                // 이미 같은 애니메이션이 재생 중이 아닐 때만 재생
+                if (!this.sprite.anims.isPlaying || this.sprite.anims.currentAnim.key !== runAnim) {
+                    this.sprite.anims.play(runAnim);
+                }
             }
         } else {
             // 정지: idle 첫 프레임
