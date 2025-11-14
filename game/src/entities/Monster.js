@@ -3,9 +3,6 @@ export default class Monster {
         this.scene = scene;
         this.type = type;
         
-        // 애니메이션 먼저 생성
-        this.createAnimations();
-        
         // 몬스터 스프라이트 생성
         const idleKey = `mob_${type}_Idle`;
         // 텍스처가 없으면 기본 사각형으로 대체
@@ -32,6 +29,9 @@ export default class Monster {
         // AI 타이머
         this.aiTimer = 0;
         this.aiInterval = 1000; // 1초마다 AI 업데이트
+        
+        // 애니메이션 생성
+        this.createAnimations();
         
         // 기본 애니메이션 재생 (있을 때만)
         const animKey = `mob_${type}_idle`;
