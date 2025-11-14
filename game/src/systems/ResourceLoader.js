@@ -9,26 +9,24 @@ export class ResourceLoader {
     // 캐릭터 애니메이션 로드
     loadCharacterAnimations() {
         const animations = [
-            { folder: 'Idle_Base', prefix: 'Idle' },
-            { folder: 'Walk_Base', prefix: 'Walk' },
-            { folder: 'Run_Base', prefix: 'Run' },
-            { folder: 'Slice_Base', prefix: 'Slice' },
-            { folder: 'Pierce_Base', prefix: 'Pierce' },
-            { folder: 'Crush_Base', prefix: 'Crush' },
-            { folder: 'Hit_Base', prefix: 'Hit' },
-            { folder: 'Death_Base', prefix: 'Death' },
-            { folder: 'Carry_Idle', prefix: 'Carry_Idle' },
-            { folder: 'Carry_Walk', prefix: 'Carry_Walk' },
-            { folder: 'Carry_Run', prefix: 'Carry_Run' },
-            { folder: 'Collect_Base', prefix: 'Collect' },
-            { folder: 'Fishing_Base', prefix: 'Fishing' },
-            { folder: 'Watering_Base', prefix: 'Watering' }
+            { folder: 'Idle_Base', prefix: 'Idle', directions: ['Down', 'Side', 'Up'] },
+            { folder: 'Walk_Base', prefix: 'Walk', directions: ['Down', 'Side', 'Up'] },
+            { folder: 'Run_Base', prefix: 'Run', directions: ['Down', 'Side', 'Up'] },
+            { folder: 'Slice_Base', prefix: 'Slice', directions: ['Down', 'Side', 'Up'] },
+            { folder: 'Pierce_Base', prefix: 'Pierce', directions: ['Down', 'Side', 'Top'] },
+            { folder: 'Crush_Base', prefix: 'Crush', directions: ['Down', 'Side', 'Up'] },
+            { folder: 'Hit_Base', prefix: 'Hit', directions: ['Down', 'Side', 'Up'] },
+            { folder: 'Death_Base', prefix: 'Death', directions: ['Down', 'Side', 'Up'] },
+            { folder: 'Carry_Idle', prefix: 'Carry_Idle', directions: ['Down', 'Side', 'Up'] },
+            { folder: 'Carry_Walk', prefix: 'Carry_Walk', directions: ['Down', 'Side', 'Up'] },
+            { folder: 'Carry_Run', prefix: 'Carry_Run', directions: ['Down', 'Side', 'Up'] },
+            { folder: 'Collect_Base', prefix: 'Collect', directions: ['Down', 'Side', 'Up'] },
+            { folder: 'Fishing_Base', prefix: 'Fishing', directions: ['Down', 'Side', 'Up'] },
+            { folder: 'Watering_Base', prefix: 'Watering', directions: ['Down', 'Side', 'Up'] }
         ];
 
-        const directions = ['Down', 'Side', 'Up'];
-
         animations.forEach(anim => {
-            directions.forEach(dir => {
+            anim.directions.forEach(dir => {
                 const key = `player_${anim.folder}_${dir}`;
                 const path = `${this.basePath}/Entities/Characters/Body_A/Animations/${anim.folder}/${anim.prefix}_${dir}-Sheet.png`;
                 this.scene.load.spritesheet(key, path, {
