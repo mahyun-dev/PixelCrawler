@@ -83,7 +83,7 @@ export default class Player {
     createAnimations() {
         const animations = [
             { key: 'idle', folder: 'Idle_Base', directions: ['Down', 'Side', 'Up'], frameRate: 4, repeat: -1 },
-            { key: 'walk', folder: 'Walk_Base', directions: ['Down', 'Side', 'Up'], frameRate: 4, repeat: -1 },
+            { key: 'walk', folder: 'Walk_Base', directions: ['Down', 'Side', 'Up'], frameRate: 2, repeat: -1 }, // 매우 느리게
             { key: 'run', folder: 'Run_Base', directions: ['Down', 'Side', 'Up'], frameRate: 8, repeat: -1 },
             { key: 'attack', folder: 'Slice_Base', directions: ['Down', 'Side', 'Up'], frameRate: 10, repeat: 0 }
         ];
@@ -100,7 +100,10 @@ export default class Player {
                             const source = texture.source[0];
                             // 실제 프레임 개수: 이미지 너비 ÷ 프레임 너비
                             const actualFrames = Math.floor(source.width / 48);
-                            const lastFrame = actualFrames - 1;
+                            
+                            // walk 애니메이션은 첫 프레임만 사용 (앞뒤 움직임 제거)
+                            const useFirstFrameOnly = anim.key === 'walk';
+                            const lastFrame = useFirstFrameOnly ? 0 : actualFrames - 1;
                             
                             if (actualFrames > 0) {
                                 this.scene.anims.create({
