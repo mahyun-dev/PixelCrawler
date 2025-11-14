@@ -94,10 +94,12 @@ export default class Player {
                     if (!this.scene.anims.exists(animKey)) {
                         try {
                             const texture = this.scene.textures.get(textureKey);
-                            // 실제 프레임 개수 계산 (frameTotal - 1이 마지막 인덱스)
-                            const lastFrame = texture.frameTotal - 1;
+                            const source = texture.source[0];
+                            // 실제 프레임 개수: 이미지 너비 ÷ 프레임 너비
+                            const actualFrames = Math.floor(source.width / 48);
+                            const lastFrame = actualFrames - 1;
                             
-                            if (lastFrame > 0) {  // 최소 2프레임 필요
+                            if (actualFrames > 0) {
                                 this.scene.anims.create({
                                     key: animKey,
                                     frames: this.scene.anims.generateFrameNumbers(textureKey, { start: 0, end: lastFrame }),
@@ -175,7 +177,9 @@ export default class Player {
     updateAnimation(velocity) {
         if (this.state.isAttacking) return;
         
-        const isMoving = velocity.x !== 0 || velocity.y !== 0;
+        // 미세한 움직임 무시 (0.1 이하는 정지로 간주)
+        const threshold = 0.1;
+        const isMoving = Math.abs(velocity.x) > threshold || Math.abs(velocity.y) > threshold;
         
         // 방향 결정 (이동 중일 때만 방향 업데이트)
         if (isMoving) {

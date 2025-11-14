@@ -118,9 +118,12 @@ export default class NPC {
             if (this.scene.textures.exists(textureKey) && !this.scene.anims.exists(animKey)) {
                 try {
                     const texture = this.scene.textures.get(textureKey);
-                    const lastFrame = texture.frameTotal - 1;
+                    const source = texture.source[0];
+                    // 실제 프레임 개수: 이미지 너비 ÷ 프레임 너비 (32px)
+                    const actualFrames = Math.floor(source.width / 32);
+                    const lastFrame = actualFrames - 1;
                     
-                    if (lastFrame > 0) {
+                    if (actualFrames > 0) {
                         this.scene.anims.create({
                             key: animKey,
                             frames: this.scene.anims.generateFrameNumbers(textureKey, { start: 0, end: lastFrame }),
