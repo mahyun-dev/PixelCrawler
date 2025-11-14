@@ -17,9 +17,11 @@ export default class Player {
             this.sprite.setDisplaySize(48, 48);
             this.sprite.setTint(0x00ff00); // 초록색으로 표시
         } else {
-            // 철 번째 프레임을 명시적으로 지정
+            // 첫 번째 프레임을 명시적으로 지정
             this.sprite = scene.physics.add.sprite(x, y, textureKey, 0);
             this.sprite.setDisplaySize(48, 48); // 명시적 크기 설정
+            // 스프라이트 원점을 중앙으로 설정 (프레임 변경 시 위치 안정화)
+            this.sprite.setOrigin(0.5, 0.5);
         }
         
         // 물리 속성 설정
@@ -213,8 +215,8 @@ export default class Player {
         this.state.lastDirection = direction;
         
         if (isMoving) {
-            // 이동 중: idle 애니메이션 사용 (좌우 흔들림 없음)
-            const animKey = `player_idle_${direction}`;
+            // 이동 중: walk 애니메이션
+            const animKey = `player_walk_${direction}`;
             if (this.scene.anims.exists(animKey)) {
                 // 이미 같은 애니메이션이 재생 중이 아닐 때만 재생
                 if (!this.sprite.anims.isPlaying || this.sprite.anims.currentAnim.key !== animKey) {
