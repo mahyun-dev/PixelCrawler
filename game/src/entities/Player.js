@@ -3,7 +3,6 @@ export default class Player {
         this.scene = scene;
         
         console.log('=== Player Constructor Start ===');
-        console.log('Scene anims before create:', Array.from(scene.anims.anims.entries.keys()).length);
         
         // 플레이어 스프라이트 생성 (실제 스프라이트 사용)
         const textureKey = 'player_Idle_Base_Down';  // ResourceLoader의 키와 일치
@@ -65,27 +64,14 @@ export default class Player {
         // 애니메이션 생성 (스프라이트 생성 후)
         this.createAnimations();
         
-        console.log('Scene anims after create:', Array.from(scene.anims.anims.entries.keys()).length);
-        
-        // 기본 애니메이션 재생 (있을 때만)
+        // 기본 애니메이션 재생
         const defaultAnimKey = 'player_idle_down';
-        
-        const allAnims = Array.from(scene.anims.anims.entries.keys());
-        console.log('All animation keys:', allAnims.slice(0, 10));
-        console.log('Player animations:', allAnims.filter(k => k.includes('player')));
-        console.log('Looking for animation:', defaultAnimKey);
-        console.log('Animation exists?', scene.anims.exists(defaultAnimKey));
         
         if (this.scene.anims.exists(defaultAnimKey)) {
             console.log('✓ Playing animation:', defaultAnimKey);
             this.sprite.play(defaultAnimKey);
         } else {
             console.error(`✗ Animation not found: ${defaultAnimKey}`);
-            const playerAnims = allAnims.filter(k => k.includes('player') && k.includes('idle'));
-            if (playerAnims.length > 0) {
-                console.log('Using fallback:', playerAnims[0]);
-                this.sprite.play(playerAnims[0]);
-            }
         }
         
         console.log('=== Player Constructor End ===');
