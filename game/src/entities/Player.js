@@ -2,13 +2,13 @@ export default class Player {
     constructor(scene, x, y) {
         this.scene = scene;
         
-        // 애니메이션 먼저 생성
-        this.createAnimations();
+        console.log('=== Player Constructor Start ===');
+        console.log('Scene anims before create:', Array.from(scene.anims.anims.entries.keys()).length);
         
         // 플레이어 스프라이트 생성 (실제 스프라이트 사용)
         const textureKey = 'player_Idle_Base_Down';  // ResourceLoader의 키와 일치
         
-        console.log('Available textures:', Object.keys(scene.textures.list));
+        console.log('Available textures:', Object.keys(scene.textures.list).filter(k => k.includes('player')).slice(0, 5));
         console.log('Looking for texture:', textureKey);
         console.log('Texture exists?', scene.textures.exists(textureKey));
         
@@ -62,11 +62,16 @@ export default class Player {
             inventory: Phaser.Input.Keyboard.KeyCodes.I
         });
         
+        // 애니메이션 생성 (스프라이트 생성 후)
+        this.createAnimations();
+        
+        console.log('Scene anims after create:', Array.from(scene.anims.anims.entries.keys()).length);
+        
         // 기본 애니메이션 재생 (있을 때만)
         const defaultAnimKey = 'player_idle_down';
         
         const allAnims = Array.from(scene.anims.anims.entries.keys());
-        console.log('All animation keys:', allAnims);
+        console.log('All animation keys:', allAnims.slice(0, 10));
         console.log('Player animations:', allAnims.filter(k => k.includes('player')));
         console.log('Looking for animation:', defaultAnimKey);
         console.log('Animation exists?', scene.anims.exists(defaultAnimKey));
@@ -82,6 +87,8 @@ export default class Player {
                 this.sprite.play(playerAnims[0]);
             }
         }
+        
+        console.log('=== Player Constructor End ===');
     }
     
     createAnimations() {
