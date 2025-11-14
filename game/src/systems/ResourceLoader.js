@@ -2,7 +2,10 @@
 export class ResourceLoader {
     constructor(scene) {
         this.scene = scene;
-        this.basePath = '../Pixel-Crawler-Pack';
+        const isProduction = window.location.hostname.includes('github.io');
+        this.basePath = isProduction 
+            ? '/PixelCrawler/Pixel-Crawler-Pack' 
+            : '../Pixel-Crawler-Pack';
     }
 
     // 캐릭터 애니메이션 로드
@@ -145,4 +148,5 @@ export class ResourceLoader {
         this.loadWeapons();
     }
 }
+
 
