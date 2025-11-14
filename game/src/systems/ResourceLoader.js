@@ -4,8 +4,8 @@ export class ResourceLoader {
         this.scene = scene;
         const isProduction = window.location.hostname.includes('github.io');
         this.basePath = isProduction 
-            ? '/PixelCrawler/Pixel-Crawler-Pack' 
-            : '../Pixel-Crawler-Pack';
+            ? '/PixelCrawler/game/Pixel-Crawler-Pack' 
+            : './Pixel-Crawler-Pack';
     }
 
     // 캐릭터 애니메이션 로드
