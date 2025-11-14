@@ -13,6 +13,7 @@ export default class Monster {
             this.sprite.setTint(0xff0000); // 빨간색으로 표시
         } else {
             this.sprite = scene.physics.add.sprite(x, y, idleKey);
+            this.sprite.setDisplaySize(48, 48); // 명시적으로 크기 설정
         }
         this.sprite.monster = this; // 역참조
         
@@ -36,12 +37,13 @@ export default class Monster {
         // 기본 애니메이션 재생 (있을 때만)
         const animKey = `mob_${type}_idle`;
         if (scene.anims.exists(animKey)) {
-            this.sprite.play(animKey);
+            this.sprite.anims.play(animKey, true);
         }
         
         // 물리 설정
         this.sprite.body.setCollideWorldBounds(true);
-        this.sprite.body.setSize(30, 40);
+        this.sprite.body.setSize(32, 40);
+        this.sprite.body.setOffset(8, 4);
     }
     
     getStatsByType(type) {
@@ -172,12 +174,18 @@ export default class Monster {
         if (this.state.isChasing && isMoving) {
             const runAnim = `mob_${this.type}_run`;
             if (this.scene.anims.exists(runAnim)) {
-                this.sprite.play(runAnim, true);
+                const currentAnim = this.sprite.anims.currentAnim;
+                if (!currentAnim || currentAnim.key !== runAnim) {
+                    this.sprite.anims.play(runAnim, true);
+                }
             }
         } else {
             const idleAnim = `mob_${this.type}_idle`;
             if (this.scene.anims.exists(idleAnim)) {
-                this.sprite.play(idleAnim, true);
+                const currentAnim = this.sprite.anims.currentAnim;
+                if (!currentAnim || currentAnim.key !== idleAnim) {
+                    this.sprite.anims.play(idleAnim, true);
+                }
             }
         }
     }
@@ -204,7 +212,7 @@ export default class Monster {
         // 사망 애니메이션
         const deathAnim = `mob_${this.type}_death`;
         if (this.scene.anims.exists(deathAnim)) {
-            this.sprite.play(deathAnim);
+            this.sprite.anims.play(deathAnim, true);
         } else {
             this.sprite.setTint(0x666666);
             this.sprite.setAlpha(0.5);

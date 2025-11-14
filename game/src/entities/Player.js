@@ -69,7 +69,7 @@ export default class Player {
         
         if (this.scene.anims.exists(defaultAnimKey)) {
             console.log('✓ Playing animation:', defaultAnimKey);
-            this.sprite.play(defaultAnimKey);
+            this.sprite.anims.play(defaultAnimKey, true);
         } else {
             console.error(`✗ Animation not found: ${defaultAnimKey}`);
         }
@@ -206,7 +206,7 @@ export default class Player {
         if (this.scene.anims.exists(animKey)) {
             const currentAnim = this.sprite.anims.currentAnim;
             if (!currentAnim || currentAnim.key !== animKey) {
-                this.sprite.play(animKey);
+                this.sprite.anims.play(animKey, true);
             }
         }
         
@@ -230,7 +230,7 @@ export default class Player {
         
         const attackAnim = `player_attack_${direction}`;
         if (this.scene.anims.exists(attackAnim)) {
-            this.sprite.play(attackAnim);
+            this.sprite.anims.play(attackAnim, true);
         }
         
         // 공격 히트박스 생성

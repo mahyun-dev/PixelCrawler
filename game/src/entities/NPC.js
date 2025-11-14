@@ -12,6 +12,7 @@ export default class NPC {
             this.sprite.setTint(0x0000ff); // 파란색으로 표시
         } else {
             this.sprite = scene.physics.add.sprite(x, y, idleKey);
+            this.sprite.setDisplaySize(48, 48); // 명시적으로 크기 설정
         }
         this.sprite.npc = this; // 역참조
         
@@ -26,12 +27,13 @@ export default class NPC {
         // 기본 애니메이션 재생 (있을 때만)
         const animKey = `npc_${type}_idle`;
         if (scene.anims.exists(animKey)) {
-            this.sprite.play(animKey);
+            this.sprite.anims.play(animKey, true);
         }
         
         // 물리 설정
         this.sprite.body.setImmovable(true);
-        this.sprite.body.setSize(30, 40);
+        this.sprite.body.setSize(32, 40);
+        this.sprite.body.setOffset(8, 4);
         
         // 상호작용 범위 표시
         this.interactionRange = 50;
