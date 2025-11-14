@@ -42,10 +42,9 @@ export default class NPC {
         // 애니메이션 생성
         this.createAnimations();
         
-        // 기본 애니메이션 재생 (있을 때만)
-        const animKey = `npc_${type}_idle`;
-        if (scene.anims.exists(animKey)) {
-            this.sprite.anims.play(animKey, true);
+        // 기본 상태: Idle 첫 프레임으로 설정
+        if (scene.textures.exists(idleKey)) {
+            this.sprite.setTexture(idleKey, 0);
         }
         
         // 물리 설정

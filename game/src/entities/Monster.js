@@ -52,10 +52,9 @@ export default class Monster {
         // 애니메이션 생성
         this.createAnimations();
         
-        // 기본 애니메이션 재생 (있을 때만)
-        const animKey = `mob_${type}_idle`;
-        if (scene.anims.exists(animKey)) {
-            this.sprite.anims.play(animKey, true);
+        // 기본 상태: Idle 첫 프레임으로 설정
+        if (scene.textures.exists(idleKey)) {
+            this.sprite.setTexture(idleKey, 0);
         }
         
         // 물리 설정
@@ -193,6 +192,7 @@ export default class Monster {
         const isMoving = this.sprite.body.velocity.x !== 0 || this.sprite.body.velocity.y !== 0;
         
         if (this.state.isChasing && isMoving) {
+            // 이동 중: run 애니메이션 재생
             const runAnim = `mob_${this.type}_run`;
             if (this.scene.anims.exists(runAnim)) {
                 const currentAnim = this.sprite.anims.currentAnim;
@@ -201,12 +201,11 @@ export default class Monster {
                 }
             }
         } else {
-            const idleAnim = `mob_${this.type}_idle`;
-            if (this.scene.anims.exists(idleAnim)) {
-                const currentAnim = this.sprite.anims.currentAnim;
-                if (!currentAnim || currentAnim.key !== idleAnim) {
-                    this.sprite.anims.play(idleAnim);
-                }
+            // 정지: idle 텍스처의 첫 프레임으로 고정
+            const idleKey = `mob_${this.type}_Idle`;
+            if (this.scene.textures.exists(idleKey)) {
+                this.sprite.anims.stop();
+                this.sprite.setTexture(idleKey, 0);
             }
         }
     }

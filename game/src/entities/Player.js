@@ -66,14 +66,10 @@ export default class Player {
         // 애니메이션 생성 (스프라이트 생성 후)
         this.createAnimations();
         
-        // 기본 애니메이션 재생
-        const defaultAnimKey = 'player_idle_down';
-        
-        if (this.scene.anims.exists(defaultAnimKey)) {
-            console.log('✓ Playing animation:', defaultAnimKey);
-            this.sprite.anims.play(defaultAnimKey, true);
-        } else {
-            console.error(`✗ Animation not found: ${defaultAnimKey}`);
+        // 기본 상태: Idle 첫 프레임으로 설정
+        if (scene.textures.exists(textureKey)) {
+            this.sprite.setTexture(textureKey, 0);
+            console.log('✓ Player initialized with idle frame');
         }
         
         console.log('=== Player Constructor End ===');
@@ -199,21 +195,31 @@ export default class Player {
             direction = 'side';
         }
         
-        // 애니메이션 선택
-        const animKey = isMoving ? `player_walk_${direction}` : `player_idle_${direction}`;
-        
-        // 현재 재생 중인 애니메이션과 다를 때만 변경
-        if (this.scene.anims.exists(animKey)) {
-            const currentAnim = this.sprite.anims.currentAnim;
-            if (!currentAnim || currentAnim.key !== animKey) {
-                this.sprite.anims.play(animKey);
-            }
-        }
-        
         // 좌우 반전
         const shouldFlip = this.state.direction === 'left';
         if (this.sprite.flipX !== shouldFlip) {
             this.sprite.setFlipX(shouldFlip);
+        }
+        
+        if (isMoving) {
+            // 이동 중: walk 애니메이션 재생
+            const animKey = `player_walk_${direction}`;
+            if (this.scene.anims.exists(animKey)) {
+                const currentAnim = this.sprite.anims.currentAnim;
+                if (!currentAnim || currentAnim.key !== animKey) {
+                    this.sprite.anims.play(animKey);
+                }
+            }
+        } else {
+            // 정지: idle 애니메이션의 첫 프레임으로 고정
+            const idleKey = `player_idle_${direction}`;
+            const textureKey = `player_Idle_Base_${direction.charAt(0).toUpperCase() + direction.slice(1)}`;
+            
+            if (this.scene.textures.exists(textureKey)) {
+                // 애니메이션 정지하고 첫 프레임만 표시
+                this.sprite.anims.stop();
+                this.sprite.setTexture(textureKey, 0);
+            }
         }
     }
     
