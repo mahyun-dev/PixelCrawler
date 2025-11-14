@@ -40,14 +40,14 @@ export class ResourceLoader {
     // 몬스터 로드
     loadMonsters() {
         const mobs = [
-            { name: 'Orc', path: 'Orc%20Crew/Orc' },
-            { name: 'OrcRogue', path: 'Orc%20Crew/Orc%20-%20Rogue' },
-            { name: 'OrcShaman', path: 'Orc%20Crew/Orc%20-%20Shaman' },
-            { name: 'OrcWarrior', path: 'Orc%20Crew/Orc%20-%20Warrior' },
-            { name: 'Skeleton', path: 'Skeleton%20Crew/Skeleton%20-%20Base' },
-            { name: 'SkeletonMage', path: 'Skeleton%20Crew/Skeleton%20-%20Mage' },
-            { name: 'SkeletonRogue', path: 'Skeleton%20Crew/Skeleton%20-%20Rogue' },
-            { name: 'SkeletonWarrior', path: 'Skeleton%20Crew/Skeleton%20-%20Warrior' }
+            { name: 'Orc', crew: 'Orc Crew', mob: 'Orc' },
+            { name: 'OrcRogue', crew: 'Orc Crew', mob: 'Orc - Rogue' },
+            { name: 'OrcShaman', crew: 'Orc Crew', mob: 'Orc - Shaman' },
+            { name: 'OrcWarrior', crew: 'Orc Crew', mob: 'Orc - Warrior' },
+            { name: 'Skeleton', crew: 'Skeleton Crew', mob: 'Skeleton - Base' },
+            { name: 'SkeletonMage', crew: 'Skeleton Crew', mob: 'Skeleton - Mage' },
+            { name: 'SkeletonRogue', crew: 'Skeleton Crew', mob: 'Skeleton - Rogue' },
+            { name: 'SkeletonWarrior', crew: 'Skeleton Crew', mob: 'Skeleton - Warrior' }
         ];
 
         const states = ['Idle', 'Run', 'Death'];
@@ -55,7 +55,10 @@ export class ResourceLoader {
         mobs.forEach(mob => {
             states.forEach(state => {
                 const key = `mob_${mob.name}_${state}`;
-                const path = `${this.basePath}/Entities/Mobs/${mob.path}/${state}/${state}-Sheet.png`;
+                // 공백만 %20으로 인코딩
+                const crew = mob.crew.replace(/ /g, '%20');
+                const mobName = mob.mob.replace(/ /g, '%20');
+                const path = `${this.basePath}/Entities/Mobs/${crew}/${mobName}/${state}/${state}-Sheet.png`;
                 this.scene.load.spritesheet(key, path, {
                     frameWidth: 48,
                     frameHeight: 48
@@ -72,7 +75,8 @@ export class ResourceLoader {
         npcs.forEach(npc => {
             states.forEach(state => {
                 const key = `npc_${npc}_${state}`;
-                const path = `${this.basePath}/Entities/Npc's/${npc}/${state}/${state}-Sheet.png`;
+                // Npc's에서 작은따옴표를 %27로 인코딩
+                const path = `${this.basePath}/Entities/Npc%27s/${npc}/${state}/${state}-Sheet.png`;
                 this.scene.load.spritesheet(key, path, {
                     frameWidth: 48,
                     frameHeight: 48
