@@ -3,9 +3,6 @@ export default class NPC {
         this.scene = scene;
         this.type = type;
         
-        // 애니메이션 먼저 생성
-        this.createAnimations();
-        
         // NPC 스프라이트 생성
         const idleKey = `npc_${type}_Idle`;
         if (!scene.textures.exists(idleKey)) {
@@ -22,6 +19,9 @@ export default class NPC {
         this.name = this.getNameByType(type);
         this.dialogue = this.getDialogueByType(type);
         this.shopItems = this.getShopItemsByType(type);
+        
+        // 애니메이션 생성
+        this.createAnimations();
         
         // 기본 애니메이션 재생 (있을 때만)
         const animKey = `npc_${type}_idle`;
