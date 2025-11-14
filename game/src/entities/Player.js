@@ -18,12 +18,13 @@ export default class Player {
             this.sprite.setTint(0x00ff00); // 초록색으로 표시
         } else {
             this.sprite = scene.physics.add.sprite(x, y, textureKey);
+            this.sprite.setDisplaySize(48, 48); // 명시적 크기 설정
         }
         
         // 물리 속성 설정
         this.sprite.body.setCollideWorldBounds(true);
-        this.sprite.body.setSize(30, 40);
-        this.sprite.body.setOffset(9, 8);
+        this.sprite.body.setSize(32, 40);
+        this.sprite.body.setOffset(8, 4);
         
         // 플레이어 스탯
         this.stats = {
@@ -182,14 +183,12 @@ export default class Player {
         
         // 방향 결정 (이동 중일 때만 방향 업데이트)
         if (isMoving) {
-            if (velocity.x < 0) {
-                this.state.direction = 'left';
-            } else if (velocity.x > 0) {
-                this.state.direction = 'right';
-            } else if (velocity.y < 0) {
-                this.state.direction = 'up';
-            } else if (velocity.y > 0) {
-                this.state.direction = 'down';
+            if (Math.abs(velocity.x) > Math.abs(velocity.y)) {
+                // 좌우 이동이 더 큼
+                this.state.direction = velocity.x < 0 ? 'left' : 'right';
+            } else {
+                // 상하 이동이 더 큼
+                this.state.direction = velocity.y < 0 ? 'up' : 'down';
             }
         }
         
@@ -206,11 +205,11 @@ export default class Player {
         if (this.scene.anims.exists(animKey)) {
             const currentAnim = this.sprite.anims.currentAnim;
             if (!currentAnim || currentAnim.key !== animKey) {
-                this.sprite.anims.play(animKey, true);
+                this.sprite.anims.play(animKey);
             }
         }
         
-        // 좌우 반전 (상태가 변경되었을 때만)
+        // 좌우 반전
         const shouldFlip = this.state.direction === 'left';
         if (this.sprite.flipX !== shouldFlip) {
             this.sprite.setFlipX(shouldFlip);

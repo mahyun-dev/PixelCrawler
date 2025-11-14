@@ -176,7 +176,7 @@ export default class Monster {
             if (this.scene.anims.exists(runAnim)) {
                 const currentAnim = this.sprite.anims.currentAnim;
                 if (!currentAnim || currentAnim.key !== runAnim) {
-                    this.sprite.anims.play(runAnim, true);
+                    this.sprite.anims.play(runAnim);
                 }
             }
         } else {
@@ -184,7 +184,7 @@ export default class Monster {
             if (this.scene.anims.exists(idleAnim)) {
                 const currentAnim = this.sprite.anims.currentAnim;
                 if (!currentAnim || currentAnim.key !== idleAnim) {
-                    this.sprite.anims.play(idleAnim, true);
+                    this.sprite.anims.play(idleAnim);
                 }
             }
         }
