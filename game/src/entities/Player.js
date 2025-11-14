@@ -81,9 +81,9 @@ export default class Player {
     createAnimations() {
         const animations = [
             { key: 'idle', folder: 'Idle_Base', directions: ['Down', 'Side', 'Up'], frameRate: 4, repeat: -1 },
-            { key: 'walk', folder: 'Walk_Base', directions: ['Down', 'Side', 'Up'], frameRate: 8, repeat: -1 },
-            { key: 'run', folder: 'Run_Base', directions: ['Down', 'Side', 'Up'], frameRate: 12, repeat: -1 },
-            { key: 'attack', folder: 'Slice_Base', directions: ['Down', 'Side', 'Up'], frameRate: 15, repeat: 0 }
+            { key: 'walk', folder: 'Walk_Base', directions: ['Down', 'Side', 'Up'], frameRate: 12, repeat: -1 },
+            { key: 'run', folder: 'Run_Base', directions: ['Down', 'Side', 'Up'], frameRate: 15, repeat: -1 },
+            { key: 'attack', folder: 'Slice_Base', directions: ['Down', 'Side', 'Up'], frameRate: 20, repeat: 0 }
         ];
         
         animations.forEach(anim => {

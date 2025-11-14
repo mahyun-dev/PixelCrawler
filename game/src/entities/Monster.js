@@ -98,7 +98,7 @@ export default class Monster {
                         this.scene.anims.create({
                             key: animKey,
                             frames: this.scene.anims.generateFrameNumbers(textureKey, { start: 0, end: lastFrame }),
-                            frameRate: state === 'Idle' ? 4 : state === 'Run' ? 10 : 8,
+                            frameRate: state === 'Idle' ? 4 : state === 'Run' ? 15 : 12,
                             repeat: state === 'Death' ? 0 : -1
                         });
                     }
