@@ -156,14 +156,6 @@ export default class Player {
             velocity.y * this.stats.speed
         );
         
-        // 디버깅: 실제 적용된 속도 확인
-        if (this.keys.up.isDown || this.keys.down.isDown || this.keys.left.isDown || this.keys.right.isDown) {
-            console.log('Input velocity:', velocity, 'Body velocity:', {
-                x: this.sprite.body.velocity.x.toFixed(2),
-                y: this.sprite.body.velocity.y.toFixed(2)
-            });
-        }
-        
         // 공격 처리
         if (Phaser.Input.Keyboard.JustDown(this.keys.attack)) {
             this.attack();
@@ -221,8 +213,8 @@ export default class Player {
         this.state.lastDirection = direction;
         
         if (isMoving) {
-            // 이동 중: walk 애니메이션
-            const animKey = `player_walk_${direction}`;
+            // 이동 중: idle 애니메이션 사용 (좌우 흔들림 없음)
+            const animKey = `player_idle_${direction}`;
             if (this.scene.anims.exists(animKey)) {
                 // 이미 같은 애니메이션이 재생 중이 아닐 때만 재생
                 if (!this.sprite.anims.isPlaying || this.sprite.anims.currentAnim.key !== animKey) {
