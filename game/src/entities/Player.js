@@ -94,19 +94,16 @@ export default class Player {
                     if (!this.scene.anims.exists(animKey)) {
                         try {
                             const texture = this.scene.textures.get(textureKey);
-                            const frameCount = texture.frameTotal;
+                            // 실제 프레임 개수 계산 (frameTotal - 1이 마지막 인덱스)
+                            const lastFrame = texture.frameTotal - 1;
                             
-                            if (frameCount > 1) {  // 2프레임 이상이면 애니메이션 생성
-                                console.log(`Creating animation ${animKey} with ${frameCount} frames (0-${frameCount-1}) from ${textureKey}`);
+                            if (lastFrame > 0) {  // 최소 2프레임 필요
                                 this.scene.anims.create({
                                     key: animKey,
-                                    frames: this.scene.anims.generateFrameNumbers(textureKey, { start: 0, end: frameCount - 1 }),
+                                    frames: this.scene.anims.generateFrameNumbers(textureKey, { start: 0, end: lastFrame }),
                                     frameRate: anim.frameRate,
                                     repeat: anim.repeat
                                 });
-                                console.log(`✓ Animation ${animKey} created successfully`);
-                            } else {
-                                console.warn(`Skipped ${animKey}: only ${frameCount} frame(s)`);
                             }
                         } catch (error) {
                             console.error(`Failed to create animation ${animKey}:`, error);

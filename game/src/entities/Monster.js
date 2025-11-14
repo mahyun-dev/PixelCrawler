@@ -89,19 +89,15 @@ export default class Monster {
             if (this.scene.textures.exists(textureKey) && !this.scene.anims.exists(animKey)) {
                 try {
                     const texture = this.scene.textures.get(textureKey);
-                    const frameCount = texture.frameTotal;
+                    const lastFrame = texture.frameTotal - 1;
                     
-                    if (frameCount > 1) {
-                        console.log(`Creating monster animation ${animKey} with ${frameCount} frames (0-${frameCount-1})`);
+                    if (lastFrame > 0) {
                         this.scene.anims.create({
                             key: animKey,
-                            frames: this.scene.anims.generateFrameNumbers(textureKey, { start: 0, end: frameCount - 1 }),
+                            frames: this.scene.anims.generateFrameNumbers(textureKey, { start: 0, end: lastFrame }),
                             frameRate: state === 'Idle' ? 4 : state === 'Run' ? 6 : 6,
                             repeat: state === 'Death' ? 0 : -1
                         });
-                        console.log(`✓ Animation ${animKey} created successfully`);
-                    } else {
-                        console.warn(`Skipped ${animKey}: only ${frameCount} frame(s)`);
                     }
                 } catch (error) {
                     console.error(`Failed to create animation ${animKey}:`, error);
