@@ -179,32 +179,41 @@ export default class Player {
         if (this.state.isAttacking) return;
         
         const isMoving = velocity.x !== 0 || velocity.y !== 0;
-        let direction = this.state.direction;
+        
+        // 방향 결정 (이동 중일 때만 방향 업데이트)
+        if (isMoving) {
+            if (velocity.x < 0) {
+                this.state.direction = 'left';
+            } else if (velocity.x > 0) {
+                this.state.direction = 'right';
+            } else if (velocity.y < 0) {
+                this.state.direction = 'up';
+            } else if (velocity.y > 0) {
+                this.state.direction = 'down';
+            }
+        }
         
         // 방향 매핑 (left/right -> side)
+        let direction = this.state.direction;
         if (direction === 'left' || direction === 'right') {
             direction = 'side';
         }
         
-        if (isMoving) {
-            const animKey = `player_walk_${direction}`;
-            if (this.scene.anims.exists(animKey)) {
-                this.sprite.anims.play(animKey, true);
-            }
-        } else {
-            const animKey = `player_idle_${direction}`;
-            if (this.scene.anims.exists(animKey)) {
-                this.sprite.anims.play(animKey, true);
+        // 애니메이션 선택
+        const animKey = isMoving ? `player_walk_${direction}` : `player_idle_${direction}`;
+        
+        // 현재 재생 중인 애니메이션과 다를 때만 변경
+        if (this.scene.anims.exists(animKey)) {
+            const currentAnim = this.sprite.anims.currentAnim;
+            if (!currentAnim || currentAnim.key !== animKey) {
+                this.sprite.play(animKey);
             }
         }
         
-        // 좌우 반전
-        if (this.state.direction === 'left') {
-            this.sprite.setFlipX(true);
-        } else if (this.state.direction === 'right') {
-            this.sprite.setFlipX(false);
-        } else {
-            this.sprite.setFlipX(false);
+        // 좌우 반전 (상태가 변경되었을 때만)
+        const shouldFlip = this.state.direction === 'left';
+        if (this.sprite.flipX !== shouldFlip) {
+            this.sprite.setFlipX(shouldFlip);
         }
     }
     
