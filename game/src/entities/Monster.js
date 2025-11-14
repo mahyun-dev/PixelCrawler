@@ -17,7 +17,7 @@ export default class Monster {
             this.sprite.setDisplaySize(48, 48);
             this.sprite.setTint(0xff0000); // 빨간색으로 표시
         } else {
-            // 철 번째 프레임을 명시적으로 지정
+            // 첫 번째 프레임을 명시적으로 지정
             this.sprite = scene.physics.add.sprite(x, y, idleKey, 0);
             
             const texture = scene.textures.get(idleKey);
@@ -32,6 +32,8 @@ export default class Monster {
             
             // 스프라이트 크기 설정 (32x32를 48x48로 확대)
             this.sprite.setDisplaySize(48, 48);
+            // 스프라이트 원점을 중앙으로 설정 (프레임 변경 시 위치 안정화)
+            this.sprite.setOrigin(0.5, 0.5);
         }
         this.sprite.monster = this; // 역참조
         
@@ -98,7 +100,7 @@ export default class Monster {
                         this.scene.anims.create({
                             key: animKey,
                             frames: this.scene.anims.generateFrameNumbers(textureKey, { start: 0, end: lastFrame }),
-                            frameRate: state === 'Idle' ? 4 : state === 'Run' ? 6 : 6,
+                            frameRate: state === 'Idle' ? 4 : state === 'Run' ? 10 : 8,
                             repeat: state === 'Death' ? 0 : -1
                         });
                     }
