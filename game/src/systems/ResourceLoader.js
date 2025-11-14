@@ -58,8 +58,8 @@ export class ResourceLoader {
                 // Phaser가 자동으로 URL 인코딩하므로 원본 경로 사용
                 const path = `${this.basePath}/Entities/Mobs/${mob.crew}/${mob.mob}/${state}/${state}-Sheet.png`;
                 this.scene.load.spritesheet(key, path, {
-                    frameWidth: 48,
-                    frameHeight: 48
+                    frameWidth: 32,  // 48 → 32로 변경
+                    frameHeight: 32  // 48 → 32로 변경
                 });
             });
         });
@@ -76,8 +76,8 @@ export class ResourceLoader {
                 // Phaser가 자동으로 URL 인코딩하므로 원본 경로 사용
                 const path = `${this.basePath}/Entities/Npc's/${npc}/${state}/${state}-Sheet.png`;
                 this.scene.load.spritesheet(key, path, {
-                    frameWidth: 48,
-                    frameHeight: 48
+                    frameWidth: 32,  // 48 → 32로 변경
+                    frameHeight: 32  // 48 → 32로 변경
                 });
             });
         });

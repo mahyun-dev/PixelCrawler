@@ -27,10 +27,10 @@ export default class Monster {
                 frames: Object.keys(texture.frames).length,
                 imageWidth: sourceImage.width,
                 imageHeight: sourceImage.height,
-                expectedFrames: Math.floor(sourceImage.width / 48) * Math.floor(sourceImage.height / 48)
+                expectedFrames: Math.floor(sourceImage.width / 32) * Math.floor(sourceImage.height / 32)
             });
             
-            // 스프라이트 크기 설정
+            // 스프라이트 크기 설정 (32x32를 48x48로 확대)
             this.sprite.setDisplaySize(48, 48);
         }
         this.sprite.monster = this; // 역참조
@@ -60,8 +60,8 @@ export default class Monster {
         
         // 물리 설정
         this.sprite.body.setCollideWorldBounds(true);
-        this.sprite.body.setSize(32, 40);
-        this.sprite.body.setOffset(8, 4);
+        this.sprite.body.setSize(30, 32);
+        this.sprite.body.setOffset(9, 8);
     }
     
     getStatsByType(type) {

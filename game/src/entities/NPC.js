@@ -26,9 +26,10 @@ export default class NPC {
                 frames: Object.keys(texture.frames).length,
                 imageWidth: sourceImage.width,
                 imageHeight: sourceImage.height,
-                expectedFrames: Math.floor(sourceImage.width / 48) * Math.floor(sourceImage.height / 48)
+                expectedFrames: Math.floor(sourceImage.width / 32) * Math.floor(sourceImage.height / 32)
             });
             
+            // 스프라이트 크기 설정 (32x32를 48x48로 확대)
             this.sprite.setDisplaySize(48, 48);
         }
         this.sprite.npc = this; // 역참조
@@ -49,8 +50,8 @@ export default class NPC {
         
         // 물리 설정
         this.sprite.body.setImmovable(true);
-        this.sprite.body.setSize(32, 40);
-        this.sprite.body.setOffset(8, 4);
+        this.sprite.body.setSize(30, 32);
+        this.sprite.body.setOffset(9, 8);
         
         // 상호작용 범위 표시
         this.interactionRange = 50;
