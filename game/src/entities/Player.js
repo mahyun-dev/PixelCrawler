@@ -49,7 +49,9 @@ export default class Player {
         this.state = {
             isAttacking: false,
             isDead: false,
-            direction: 'down'
+            direction: 'down',
+            lastAnimState: 'idle',  // 마지막 애니메이션 상태 추적
+            lastDirection: 'down'    // 마지막 방향 추적
         };
         
         // 키보드 입력 설정
@@ -77,10 +79,10 @@ export default class Player {
     
     createAnimations() {
         const animations = [
-            { key: 'idle', folder: 'Idle_Base', directions: ['Down', 'Side', 'Up'], frameRate: 6, repeat: -1 },
-            { key: 'walk', folder: 'Walk_Base', directions: ['Down', 'Side', 'Up'], frameRate: 8, repeat: -1 },
-            { key: 'run', folder: 'Run_Base', directions: ['Down', 'Side', 'Up'], frameRate: 10, repeat: -1 },
-            { key: 'attack', folder: 'Slice_Base', directions: ['Down', 'Side', 'Up'], frameRate: 12, repeat: 0 }
+            { key: 'idle', folder: 'Idle_Base', directions: ['Down', 'Side', 'Up'], frameRate: 4, repeat: -1 },
+            { key: 'walk', folder: 'Walk_Base', directions: ['Down', 'Side', 'Up'], frameRate: 6, repeat: -1 },
+            { key: 'run', folder: 'Run_Base', directions: ['Down', 'Side', 'Up'], frameRate: 8, repeat: -1 },
+            { key: 'attack', folder: 'Slice_Base', directions: ['Down', 'Side', 'Up'], frameRate: 10, repeat: 0 }
         ];
         
         animations.forEach(anim => {
@@ -181,15 +183,13 @@ export default class Player {
         // 방향 결정 (이동 중일 때만 방향 업데이트)
         if (isMoving) {
             if (Math.abs(velocity.x) > Math.abs(velocity.y)) {
-                // 좌우 이동이 더 큼
                 this.state.direction = velocity.x < 0 ? 'left' : 'right';
             } else {
-                // 상하 이동이 더 큼
                 this.state.direction = velocity.y < 0 ? 'up' : 'down';
             }
         }
         
-        // 방향 매핑 (left/right -> side)
+        // 방향 매핑
         let direction = this.state.direction;
         if (direction === 'left' || direction === 'right') {
             direction = 'side';
@@ -201,22 +201,27 @@ export default class Player {
             this.sprite.setFlipX(shouldFlip);
         }
         
+        // 상태 변경 감지
+        const animState = isMoving ? 'walk' : 'idle';
+        const stateChanged = animState !== this.state.lastAnimState || direction !== this.state.lastDirection;
+        
+        if (!stateChanged) return; // 상태가 변하지 않았으면 아무것도 하지 않음
+        
+        this.state.lastAnimState = animState;
+        this.state.lastDirection = direction;
+        
         if (isMoving) {
-            // 이동 중: walk 애니메이션 재생
+            // 이동 중: walk 애니메이션
             const animKey = `player_walk_${direction}`;
             if (this.scene.anims.exists(animKey)) {
-                const currentAnim = this.sprite.anims.currentAnim;
-                if (!currentAnim || currentAnim.key !== animKey) {
-                    this.sprite.anims.play(animKey);
-                }
+                this.sprite.anims.play(animKey, true);
             }
         } else {
-            // 정지: idle 애니메이션의 첫 프레임으로 고정
-            const idleKey = `player_idle_${direction}`;
-            const textureKey = `player_Idle_Base_${direction.charAt(0).toUpperCase() + direction.slice(1)}`;
+            // 정지: 애니메이션 정지 및 첫 프레임
+            const directionCapitalized = direction.charAt(0).toUpperCase() + direction.slice(1);
+            const textureKey = `player_Idle_Base_${directionCapitalized}`;
             
             if (this.scene.textures.exists(textureKey)) {
-                // 애니메이션 정지하고 첫 프레임만 표시
                 this.sprite.anims.stop();
                 this.sprite.setTexture(textureKey, 0);
             }

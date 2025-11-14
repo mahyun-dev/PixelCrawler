@@ -42,7 +42,8 @@ export default class Monster {
         this.state = {
             isAttacking: false,
             isDead: false,
-            isChasing: false
+            isChasing: false,
+            lastAnimState: 'idle'  // 마지막 애니메이션 상태
         };
         
         // AI 타이머
@@ -95,7 +96,7 @@ export default class Monster {
                         this.scene.anims.create({
                             key: animKey,
                             frames: this.scene.anims.generateFrameNumbers(textureKey, { start: 0, end: frameCount - 1 }),
-                            frameRate: state === 'Idle' ? 6 : state === 'Run' ? 10 : 8,
+                            frameRate: state === 'Idle' ? 4 : state === 'Run' ? 6 : 6,
                             repeat: state === 'Death' ? 0 : -1
                         });
                         console.log(`✓ Animation ${animKey} created successfully`);
@@ -189,19 +190,22 @@ export default class Monster {
     updateAnimation() {
         if (this.state.isDead) return;
         
-        const isMoving = this.sprite.body.velocity.x !== 0 || this.sprite.body.velocity.y !== 0;
+        const isMoving = Math.abs(this.sprite.body.velocity.x) > 5 || Math.abs(this.sprite.body.velocity.y) > 5;
+        const animState = isMoving ? 'run' : 'idle';
         
-        if (this.state.isChasing && isMoving) {
-            // 이동 중: run 애니메이션 재생
+        // 상태가 변하지 않았으면 아무것도 하지 않음
+        if (animState === this.state.lastAnimState) return;
+        
+        this.state.lastAnimState = animState;
+        
+        if (isMoving) {
+            // 이동 중: run 애니메이션
             const runAnim = `mob_${this.type}_run`;
             if (this.scene.anims.exists(runAnim)) {
-                const currentAnim = this.sprite.anims.currentAnim;
-                if (!currentAnim || currentAnim.key !== runAnim) {
-                    this.sprite.anims.play(runAnim);
-                }
+                this.sprite.anims.play(runAnim, true);
             }
         } else {
-            // 정지: idle 텍스처의 첫 프레임으로 고정
+            // 정지: idle 첫 프레임
             const idleKey = `mob_${this.type}_Idle`;
             if (this.scene.textures.exists(idleKey)) {
                 this.sprite.anims.stop();
