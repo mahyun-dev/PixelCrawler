@@ -20,9 +20,13 @@ export default class NPC {
             this.sprite = scene.physics.add.sprite(x, y, idleKey, 0);
             
             const texture = scene.textures.get(idleKey);
+            const sourceImage = texture.source[0];
             console.log(`Texture ${idleKey} loaded:`, {
                 frameTotal: texture.frameTotal,
-                frames: Object.keys(texture.frames).length
+                frames: Object.keys(texture.frames).length,
+                imageWidth: sourceImage.width,
+                imageHeight: sourceImage.height,
+                expectedFrames: Math.floor(sourceImage.width / 48) * Math.floor(sourceImage.height / 48)
             });
             
             this.sprite.setDisplaySize(48, 48);
@@ -117,13 +121,16 @@ export default class NPC {
                     const frameCount = texture.frameTotal;
                     
                     if (frameCount > 1) {
+                        console.log(`Creating NPC animation ${animKey} with ${frameCount} frames (0-${frameCount-1})`);
                         this.scene.anims.create({
                             key: animKey,
                             frames: this.scene.anims.generateFrameNumbers(textureKey, { start: 0, end: frameCount - 1 }),
                             frameRate: 6,
                             repeat: -1
                         });
-                        console.log(`Animation ${animKey} created successfully with ${frameCount} frames`);
+                        console.log(`✓ Animation ${animKey} created successfully`);
+                    } else {
+                        console.warn(`Skipped ${animKey}: only ${frameCount} frame(s)`);
                     }
                 } catch (error) {
                     console.error(`Failed to create animation ${animKey}:`, error);

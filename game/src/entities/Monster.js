@@ -21,10 +21,13 @@ export default class Monster {
             this.sprite = scene.physics.add.sprite(x, y, idleKey, 0);
             
             const texture = scene.textures.get(idleKey);
+            const sourceImage = texture.source[0];
             console.log(`Texture ${idleKey} loaded:`, {
                 frameTotal: texture.frameTotal,
                 frames: Object.keys(texture.frames).length,
-                source: texture.source[0]
+                imageWidth: sourceImage.width,
+                imageHeight: sourceImage.height,
+                expectedFrames: Math.floor(sourceImage.width / 48) * Math.floor(sourceImage.height / 48)
             });
             
             // 스프라이트 크기 설정
@@ -89,13 +92,16 @@ export default class Monster {
                     const frameCount = texture.frameTotal;
                     
                     if (frameCount > 1) {
+                        console.log(`Creating monster animation ${animKey} with ${frameCount} frames (0-${frameCount-1})`);
                         this.scene.anims.create({
                             key: animKey,
                             frames: this.scene.anims.generateFrameNumbers(textureKey, { start: 0, end: frameCount - 1 }),
                             frameRate: state === 'Idle' ? 6 : state === 'Run' ? 10 : 8,
                             repeat: state === 'Death' ? 0 : -1
                         });
-                        console.log(`Animation ${animKey} created successfully with ${frameCount} frames`);
+                        console.log(`✓ Animation ${animKey} created successfully`);
+                    } else {
+                        console.warn(`Skipped ${animKey}: only ${frameCount} frame(s)`);
                     }
                 } catch (error) {
                     console.error(`Failed to create animation ${animKey}:`, error);
