@@ -32,8 +32,6 @@ export default class Monster {
             
             // 스프라이트 크기 설정 (32x32를 48x48로 확대)
             this.sprite.setDisplaySize(48, 48);
-            // 스프라이트 원점을 중앙으로 설정 (프레임 변경 시 위치 안정화)
-            this.sprite.setOrigin(0.5, 0.5);
         }
         this.sprite.monster = this; // 역참조
         
@@ -62,8 +60,8 @@ export default class Monster {
         
         // 물리 설정
         this.sprite.body.setCollideWorldBounds(true);
-        this.sprite.body.setSize(30, 32);
-        this.sprite.body.setOffset(9, 8);
+        this.sprite.body.setSize(32, 32);
+        this.sprite.body.setOffset(8, 8);
     }
     
     getStatsByType(type) {
