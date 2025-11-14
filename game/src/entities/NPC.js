@@ -97,12 +97,22 @@ export default class NPC {
             const textureKey = `npc_${this.type}_${state}`;
             
             if (this.scene.textures.exists(textureKey) && !this.scene.anims.exists(animKey)) {
-                this.scene.anims.create({
-                    key: animKey,
-                    frames: this.scene.anims.generateFrameNumbers(textureKey, { start: 0, end: -1 }),
-                    frameRate: 6,
-                    repeat: -1
-                });
+                try {
+                    const texture = this.scene.textures.get(textureKey);
+                    const frameCount = texture.frameTotal;
+                    
+                    if (frameCount > 1) {
+                        this.scene.anims.create({
+                            key: animKey,
+                            frames: this.scene.anims.generateFrameNumbers(textureKey, { start: 0, end: frameCount - 1 }),
+                            frameRate: 6,
+                            repeat: -1
+                        });
+                        console.log(`Animation ${animKey} created successfully with ${frameCount} frames`);
+                    }
+                } catch (error) {
+                    console.error(`Failed to create animation ${animKey}:`, error);
+                }
             }
         });
     }
