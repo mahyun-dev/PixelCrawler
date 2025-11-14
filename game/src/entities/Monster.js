@@ -92,12 +92,22 @@ export default class Monster {
                     const source = texture.source[0];
                     // 실제 프레임 개수: 이미지 너비 ÷ 프레임 너비 (32px)
                     const actualFrames = Math.floor(source.width / 32);
-                    const lastFrame = actualFrames - 1;
+                    
+                    // Run은 중앙 프레임만 사용하여 흔들림 최소화
+                    let startFrame = 0;
+                    let endFrame = actualFrames - 1;
+                    
+                    if (state === 'Run' && actualFrames >= 4) {
+                        // 중앙 2프레임만 사용
+                        const mid = Math.floor(actualFrames / 2);
+                        startFrame = mid - 1;
+                        endFrame = mid;
+                    }
                     
                     if (actualFrames > 0) {
                         this.scene.anims.create({
                             key: animKey,
-                            frames: this.scene.anims.generateFrameNumbers(textureKey, { start: 0, end: lastFrame }),
+                            frames: this.scene.anims.generateFrameNumbers(textureKey, { start: startFrame, end: endFrame }),
                             frameRate: state === 'Idle' ? 4 : state === 'Run' ? 15 : 12,
                             repeat: state === 'Death' ? 0 : -1
                         });

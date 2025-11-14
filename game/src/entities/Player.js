@@ -98,12 +98,27 @@ export default class Player {
                             const source = texture.source[0];
                             // 실제 프레임 개수: 이미지 너비 ÷ 프레임 너비
                             const actualFrames = Math.floor(source.width / 48);
-                            const lastFrame = actualFrames - 1;
+                            
+                            // walk/attack은 중앙 프레임만 사용하여 흔들림 최소화
+                            let startFrame = 0;
+                            let endFrame = actualFrames - 1;
+                            
+                            if (anim.key === 'walk' && actualFrames >= 4) {
+                                // 중앙 2프레임만 사용 (예: 6프레임 중 2,3번)
+                                const mid = Math.floor(actualFrames / 2);
+                                startFrame = mid - 1;
+                                endFrame = mid;
+                            } else if (anim.key === 'attack' && actualFrames >= 6) {
+                                // 공격은 중앙 4프레임만 사용
+                                const mid = Math.floor(actualFrames / 2);
+                                startFrame = Math.max(0, mid - 2);
+                                endFrame = Math.min(actualFrames - 1, mid + 1);
+                            }
                             
                             if (actualFrames > 0) {
                                 this.scene.anims.create({
                                     key: animKey,
-                                    frames: this.scene.anims.generateFrameNumbers(textureKey, { start: 0, end: lastFrame }),
+                                    frames: this.scene.anims.generateFrameNumbers(textureKey, { start: startFrame, end: endFrame }),
                                     frameRate: anim.frameRate,
                                     repeat: anim.repeat
                                 });
