@@ -7,6 +7,11 @@ export default class Player {
         
         // 플레이어 스프라이트 생성 (실제 스프라이트 사용)
         const textureKey = 'player_Idle_Base_Down';  // ResourceLoader의 키와 일치
+        
+        console.log('Available textures:', Object.keys(scene.textures.list));
+        console.log('Looking for texture:', textureKey);
+        console.log('Texture exists?', scene.textures.exists(textureKey));
+        
         if (!scene.textures.exists(textureKey)) {
             console.warn(`Texture not found: ${textureKey}, creating placeholder`);
             this.sprite = scene.physics.add.sprite(x, y, '__DEFAULT');
@@ -58,8 +63,15 @@ export default class Player {
         });
         
         // 기본 애니메이션 재생 (있을 때만)
-        if (this.scene.anims.exists('player_idle_down')) {
-            this.sprite.play('player_idle_down');
+        const defaultAnimKey = 'player_idle_down';
+        console.log('Available animations:', scene.anims.anims.entries);
+        console.log('Looking for animation:', defaultAnimKey);
+        console.log('Animation exists?', scene.anims.exists(defaultAnimKey));
+        
+        if (this.scene.anims.exists(defaultAnimKey)) {
+            this.sprite.play(defaultAnimKey);
+        } else {
+            console.warn(`Animation not found: ${defaultAnimKey}`);
         }
     }
     
