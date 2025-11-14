@@ -55,10 +55,8 @@ export class ResourceLoader {
         mobs.forEach(mob => {
             states.forEach(state => {
                 const key = `mob_${mob.name}_${state}`;
-                // 공백만 %20으로 인코딩
-                const crew = mob.crew.replace(/ /g, '%20');
-                const mobName = mob.mob.replace(/ /g, '%20');
-                const path = `${this.basePath}/Entities/Mobs/${crew}/${mobName}/${state}/${state}-Sheet.png`;
+                // Phaser가 자동으로 URL 인코딩하므로 원본 경로 사용
+                const path = `${this.basePath}/Entities/Mobs/${mob.crew}/${mob.mob}/${state}/${state}-Sheet.png`;
                 this.scene.load.spritesheet(key, path, {
                     frameWidth: 48,
                     frameHeight: 48
@@ -75,8 +73,8 @@ export class ResourceLoader {
         npcs.forEach(npc => {
             states.forEach(state => {
                 const key = `npc_${npc}_${state}`;
-                // Npc's에서 작은따옴표를 %27로 인코딩
-                const path = `${this.basePath}/Entities/Npc%27s/${npc}/${state}/${state}-Sheet.png`;
+                // Phaser가 자동으로 URL 인코딩하므로 원본 경로 사용
+                const path = `${this.basePath}/Entities/Npc's/${npc}/${state}/${state}-Sheet.png`;
                 this.scene.load.spritesheet(key, path, {
                     frameWidth: 48,
                     frameHeight: 48
