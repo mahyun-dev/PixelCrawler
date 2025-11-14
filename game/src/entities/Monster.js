@@ -5,6 +5,11 @@ export default class Monster {
         
         // 몬스터 스프라이트 생성
         const idleKey = `mob_${type}_Idle`;
+        
+        console.log(`=== Monster ${type} Creation ===`);
+        console.log('Looking for texture:', idleKey);
+        console.log('Texture exists?', scene.textures.exists(idleKey));
+        
         // 텍스처가 없으면 기본 사각형으로 대체
         if (!scene.textures.exists(idleKey)) {
             console.warn(`Texture not found: ${idleKey}, creating placeholder`);
@@ -12,8 +17,18 @@ export default class Monster {
             this.sprite.setDisplaySize(48, 48);
             this.sprite.setTint(0xff0000); // 빨간색으로 표시
         } else {
-            this.sprite = scene.physics.add.sprite(x, y, idleKey);
-            this.sprite.setDisplaySize(48, 48); // 명시적으로 크기 설정
+            // 철 번째 프레임을 명시적으로 지정
+            this.sprite = scene.physics.add.sprite(x, y, idleKey, 0);
+            
+            const texture = scene.textures.get(idleKey);
+            console.log(`Texture ${idleKey} loaded:`, {
+                frameTotal: texture.frameTotal,
+                frames: Object.keys(texture.frames).length,
+                source: texture.source[0]
+            });
+            
+            // 스프라이트 크기 설정
+            this.sprite.setDisplaySize(48, 48);
         }
         this.sprite.monster = this; // 역참조
         

@@ -5,14 +5,27 @@ export default class NPC {
         
         // NPC 스프라이트 생성
         const idleKey = `npc_${type}_Idle`;
+        
+        console.log(`=== NPC ${type} Creation ===`);
+        console.log('Looking for texture:', idleKey);
+        console.log('Texture exists?', scene.textures.exists(idleKey));
+        
         if (!scene.textures.exists(idleKey)) {
             console.warn(`Texture not found: ${idleKey}, creating placeholder`);
             this.sprite = scene.physics.add.sprite(x, y, '__DEFAULT');
             this.sprite.setDisplaySize(48, 48);
             this.sprite.setTint(0x0000ff); // 파란색으로 표시
         } else {
-            this.sprite = scene.physics.add.sprite(x, y, idleKey);
-            this.sprite.setDisplaySize(48, 48); // 명시적으로 크기 설정
+            // 철 번째 프레임을 명시적으로 지정
+            this.sprite = scene.physics.add.sprite(x, y, idleKey, 0);
+            
+            const texture = scene.textures.get(idleKey);
+            console.log(`Texture ${idleKey} loaded:`, {
+                frameTotal: texture.frameTotal,
+                frames: Object.keys(texture.frames).length
+            });
+            
+            this.sprite.setDisplaySize(48, 48);
         }
         this.sprite.npc = this; // 역참조
         

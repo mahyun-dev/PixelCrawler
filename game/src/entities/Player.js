@@ -17,7 +17,8 @@ export default class Player {
             this.sprite.setDisplaySize(48, 48);
             this.sprite.setTint(0x00ff00); // 초록색으로 표시
         } else {
-            this.sprite = scene.physics.add.sprite(x, y, textureKey);
+            // 철 번째 프레임을 명시적으로 지정
+            this.sprite = scene.physics.add.sprite(x, y, textureKey, 0);
             this.sprite.setDisplaySize(48, 48); // 명시적 크기 설정
         }
         
