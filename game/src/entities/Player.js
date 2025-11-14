@@ -156,6 +156,14 @@ export default class Player {
             velocity.y * this.stats.speed
         );
         
+        // 디버깅: 실제 적용된 속도 확인
+        if (this.keys.up.isDown || this.keys.down.isDown || this.keys.left.isDown || this.keys.right.isDown) {
+            console.log('Input velocity:', velocity, 'Body velocity:', {
+                x: this.sprite.body.velocity.x.toFixed(2),
+                y: this.sprite.body.velocity.y.toFixed(2)
+            });
+        }
+        
         // 공격 처리
         if (Phaser.Input.Keyboard.JustDown(this.keys.attack)) {
             this.attack();
