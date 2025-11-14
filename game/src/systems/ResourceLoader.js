@@ -2,28 +2,35 @@
 export class ResourceLoader {
     constructor(scene) {
         this.scene = scene;
-        const isProduction = window.location.hostname.includes('github.io');
-        this.basePath = isProduction 
-            ? '/PixelCrawler/game/Pixel-Crawler-Pack' 
-            : './Pixel-Crawler-Pack';
+        // game 폴더 내부의 Pixel-Crawler-Pack 사용
+        this.basePath = 'Pixel-Crawler-Pack';
     }
 
     // 캐릭터 애니메이션 로드
     loadCharacterAnimations() {
         const animations = [
-            'Idle_Base', 'Walk_Base', 'Run_Base',
-            'Slice_Base', 'Pierce_Base', 'Crush_Base',
-            'Hit_Base', 'Death_Base',
-            'Carry_Idle', 'Carry_Walk', 'Carry_Run',
-            'Collect_Base', 'Fishing_Base', 'Watering_Base'
+            { folder: 'Idle_Base', prefix: 'Idle' },
+            { folder: 'Walk_Base', prefix: 'Walk' },
+            { folder: 'Run_Base', prefix: 'Run' },
+            { folder: 'Slice_Base', prefix: 'Slice' },
+            { folder: 'Pierce_Base', prefix: 'Pierce' },
+            { folder: 'Crush_Base', prefix: 'Crush' },
+            { folder: 'Hit_Base', prefix: 'Hit' },
+            { folder: 'Death_Base', prefix: 'Death' },
+            { folder: 'Carry_Idle', prefix: 'Carry_Idle' },
+            { folder: 'Carry_Walk', prefix: 'Carry_Walk' },
+            { folder: 'Carry_Run', prefix: 'Carry_Run' },
+            { folder: 'Collect_Base', prefix: 'Collect' },
+            { folder: 'Fishing_Base', prefix: 'Fishing' },
+            { folder: 'Watering_Base', prefix: 'Watering' }
         ];
 
         const directions = ['Down', 'Side', 'Up'];
 
         animations.forEach(anim => {
             directions.forEach(dir => {
-                const key = `player_${anim}_${dir}`;
-                const path = `${this.basePath}/Entities/Characters/Body_A/Animations/${anim}/${anim}_${dir}-Sheet.png`;
+                const key = `player_${anim.folder}_${dir}`;
+                const path = `${this.basePath}/Entities/Characters/Body_A/Animations/${anim.folder}/${anim.prefix}_${dir}-Sheet.png`;
                 this.scene.load.spritesheet(key, path, {
                     frameWidth: 48,
                     frameHeight: 48
@@ -93,7 +100,8 @@ export class ResourceLoader {
         // 애니메이션 오브젝트
         for (let i = 1; i <= 5; i++) {
             const key = `env_Pan_0${i}`;
-            const path = `${this.basePath}/Environment/Props/Animated/Pan_0${i}-Sheet.png`;
+            const num = i < 10 ? `0${i}` : `${i}`;
+            const path = `${this.basePath}/Environment/Props/Animated/Pan_${num}-Sheet.png`;
             this.scene.load.spritesheet(key, path, {
                 frameWidth: 16,
                 frameHeight: 16
@@ -105,7 +113,7 @@ export class ResourceLoader {
     loadTilesets() {
         const tilesets = [
             'Dungeon_Tiles', 'Floors_Tiles', 'Wall_Tiles',
-            'Wall_Variations', 'Water_tiles', 'Water'
+            'Wall_Variations', 'Water_tiles'
         ];
 
         tilesets.forEach(tileset => {
@@ -148,5 +156,3 @@ export class ResourceLoader {
         this.loadWeapons();
     }
 }
-
-

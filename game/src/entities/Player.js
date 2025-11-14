@@ -2,8 +2,19 @@ export default class Player {
     constructor(scene, x, y) {
         this.scene = scene;
         
+        // 애니메이션 먼저 생성
+        this.createAnimations();
+        
         // 플레이어 스프라이트 생성 (실제 스프라이트 사용)
-        this.sprite = scene.physics.add.sprite(x, y, 'player_Idle_Base_Down');
+        const textureKey = 'player_Idle_Base_Down';
+        if (!scene.textures.exists(textureKey)) {
+            console.warn(`Texture not found: ${textureKey}, creating placeholder`);
+            this.sprite = scene.physics.add.sprite(x, y, '__DEFAULT');
+            this.sprite.setDisplaySize(48, 48);
+            this.sprite.setTint(0x00ff00); // 초록색으로 표시
+        } else {
+            this.sprite = scene.physics.add.sprite(x, y, textureKey);
+        }
         
         // 물리 속성 설정
         this.sprite.body.setCollideWorldBounds(true);
@@ -46,8 +57,10 @@ export default class Player {
             inventory: Phaser.Input.Keyboard.KeyCodes.I
         });
         
-        // 애니메이션 생성
-        this.createAnimations();
+        // 기본 애니메이션 재생 (있을 때만)
+        if (this.scene.anims.exists('player_idle_down')) {
+            this.sprite.play('player_idle_down');
+        }
     }
     
     createAnimations() {
@@ -66,21 +79,19 @@ export default class Player {
                 
                 if (this.scene.textures.exists(textureKey)) {
                     if (!this.scene.anims.exists(animKey)) {
-                        this.scene.anims.create({
-                            key: animKey,
-                            frames: this.scene.anims.generateFrameNumbers(textureKey, { start: 0, end: -1 }),
-                            frameRate: anim.frameRate,
-                            repeat: anim.repeat
-                        });
+                        const frameCount = this.scene.textures.get(textureKey).frameTotal;
+                        if (frameCount > 1) {
+                            this.scene.anims.create({
+                                key: animKey,
+                                frames: this.scene.anims.generateFrameNumbers(textureKey, { start: 0, end: frameCount - 1 }),
+                                frameRate: anim.frameRate,
+                                repeat: anim.repeat
+                            });
+                        }
                     }
                 }
             });
         });
-        
-        // 기본 애니메이션 재생
-        if (this.scene.anims.exists('player_idle_down')) {
-            this.sprite.play('player_idle_down');
-        }
     }
     
     update() {

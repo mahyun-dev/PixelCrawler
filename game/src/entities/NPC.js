@@ -3,9 +3,19 @@ export default class NPC {
         this.scene = scene;
         this.type = type;
         
+        // 애니메이션 먼저 생성
+        this.createAnimations();
+        
         // NPC 스프라이트 생성
         const idleKey = `npc_${type}_Idle`;
-        this.sprite = scene.physics.add.sprite(x, y, idleKey);
+        if (!scene.textures.exists(idleKey)) {
+            console.warn(`Texture not found: ${idleKey}, creating placeholder`);
+            this.sprite = scene.physics.add.sprite(x, y, '__DEFAULT');
+            this.sprite.setDisplaySize(48, 48);
+            this.sprite.setTint(0x0000ff); // 파란색으로 표시
+        } else {
+            this.sprite = scene.physics.add.sprite(x, y, idleKey);
+        }
         this.sprite.npc = this; // 역참조
         
         // NPC 정보
@@ -13,12 +23,10 @@ export default class NPC {
         this.dialogue = this.getDialogueByType(type);
         this.shopItems = this.getShopItemsByType(type);
         
-        // 애니메이션 생성
-        this.createAnimations();
-        
-        // 기본 애니메이션 재생
-        if (scene.anims.exists(`npc_${type}_idle`)) {
-            this.sprite.play(`npc_${type}_idle`);
+        // 기본 애니메이션 재생 (있을 때만)
+        const animKey = `npc_${type}_idle`;
+        if (scene.anims.exists(animKey)) {
+            this.sprite.play(animKey);
         }
         
         // 물리 설정
