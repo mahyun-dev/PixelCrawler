@@ -64,14 +64,18 @@ export default class Player {
         
         // 기본 애니메이션 재생 (있을 때만)
         const defaultAnimKey = 'player_idle_down';
-        console.log('Available animations:', scene.anims.anims.entries);
+        
+        const allAnims = Object.keys(scene.anims.anims.entries);
+        console.log('All animation keys:', allAnims);
         console.log('Looking for animation:', defaultAnimKey);
         console.log('Animation exists?', scene.anims.exists(defaultAnimKey));
         
         if (this.scene.anims.exists(defaultAnimKey)) {
+            console.log('Playing animation:', defaultAnimKey);
             this.sprite.play(defaultAnimKey);
         } else {
-            console.warn(`Animation not found: ${defaultAnimKey}`);
+            console.error(`Animation not found: ${defaultAnimKey}`);
+            console.log('Try using one of:', allAnims.filter(k => k.includes('player')));
         }
     }
     
