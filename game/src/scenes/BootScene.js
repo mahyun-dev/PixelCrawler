@@ -53,6 +53,11 @@ export default class BootScene extends Phaser.Scene {
             assetText.destroy();
         });
 
+        // 로딩 에러 핸들링
+        this.load.on('loaderror', (file) => {
+            console.error('Failed to load:', file.src);
+        });
+
         // 리소스 로더 초기화 및 모든 리소스 로드
         const resourceLoader = new ResourceLoader(this);
         resourceLoader.loadAll();
